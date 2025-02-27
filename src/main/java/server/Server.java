@@ -5,23 +5,30 @@ import java.net.*;
 import java.util.*;
 
 public class Server {
-    private static Map<String, Socket> clients = new HashMap<>();
+    private static final Map<String, Socket> clients = new HashMap<>();
 
-    public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(12345)) {
-            System.out.println("Chat Server started...");
-
-            while (true) {
-                Socket socket = serverSocket.accept();
-                new ClientHandler(socket).start();
+    public static void startServer() {
+        System.out.println("Starting server in Background...");
+        Thread thread = new Thread(() -> {
+            try (ServerSocket serverSocket = new ServerSocket(5555)) {
+//                System.out.println("Chat Server started...");
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    System.out.println("Remote address: " + socket.getRemoteSocketAddress());
+                    new ClientHandler(socket).start();
+                }
+            } catch (IOException e) {
+                System.out.println("Server Error: " + e.getMessage());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        );
+        // start  thread as daemon mean it run in the background process
+        thread.setDaemon(true);
+        thread.start();
     }
 
-    static class ClientHandler extends Thread {
-        private Socket socket;
+    private static class ClientHandler extends Thread {
+        private final Socket socket;
         private String username;
         private BufferedReader in;
         private PrintWriter out;
@@ -37,11 +44,12 @@ public class Server {
 
                 // Authentication
                 out.println("Enter username:");
+//                out.flush();
                 username = in.readLine();
 
                 synchronized (clients) {
                     if (clients.containsKey(username)) {
-                        out.println("Username already taken. Disconnecting.");
+                        out.println("[!] Username already taken. Disconnecting.");
                         socket.close();
                         return;
                     }
