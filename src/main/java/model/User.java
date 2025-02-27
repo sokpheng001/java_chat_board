@@ -1,8 +1,10 @@
-package client.model;
+package model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Date;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +15,7 @@ public class User {
     private String userName;
     private String email;
     private String password;
+    private Date loginDate;
     private Boolean isDeleted;
     private Boolean isVerified;
 }
