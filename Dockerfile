@@ -8,7 +8,7 @@ LABEL authors="Kim Chansokpheng"
 WORKDIR /app
 
 # Copy the jar file into the container
-#COPY src/main/java/server/*.jar app.jar
+#COPY src/main/java/connection.server/*.jar app.jar
 
 # Set entry point to run the jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

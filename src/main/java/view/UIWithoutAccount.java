@@ -1,9 +1,13 @@
 package view;
 
 import bean.UserBean;
+import connection.client.Client;
 import controller.UserController;
 import model.dto.RegisterDto;
 import model.dto.ResponseUserDto;
+import utils.GetMachineIP;
+
+import utils.WriteDataForVerifyLoginStatus;
 
 import java.util.Scanner;
 
@@ -19,6 +23,7 @@ public class UIWithoutAccount {
         return new RegisterDto(name, email, password);
     }
     public static void home(){
+
         System.out.println("""
                 -------------------------
                 Welcome to the Chat_Board
@@ -26,7 +31,7 @@ public class UIWithoutAccount {
                 1. Register
                 2. Login
                 3. Exit
-                """);
+                -------------------""");
         System.out.print("[+] Insert option: ");
         int opt = new Scanner(System.in).nextInt();
         switchOpt (opt);
@@ -35,7 +40,9 @@ public class UIWithoutAccount {
         switch (opt){
             case 1 ->{
                 ResponseUserDto responseUserDto = UserBean.userController.register(getRegisterDto());
-                System.out.println(responseUserDto);
+                WriteDataForVerifyLoginStatus.writeDataOfStatusToFie(responseUserDto.uuid());
+                new Client().getClient(GetMachineIP.getMachineIP(),1234);
+                System.out.println("[+] User data created: " + responseUserDto);
             }
         }
     }

@@ -7,7 +7,7 @@ import repository.abstraction.UserRepository;
 
 /**
  * <h>This class is created for manage the User class's object</h>
- * @author kimchansokpheng
+ * @author Kim Chansokpheng
  * @version 1
  */
 public class UserBean {

@@ -1,4 +1,3 @@
 package repository.abstraction;
 
-public interface ChatConnectionRepository {
-}
+public interface ChatConnectionRepository { }
