@@ -1,9 +1,9 @@
-package controller;
+package client.controller;
 
+import client.service.UserService;
+import client.service.UserServiceImpl;
 import model.dto.RegisterDto;
 import model.dto.ResponseUserDto;
-import service.UserService;
-import service.UserServiceImpl;
 
 public class UserController {
     private final UserService userService = new UserServiceImpl();

@@ -3,5 +3,5 @@
 - Initialized Date: 02/17/2025
 --------------------------------
 ``
-System.out.println("Console Application")
+System.out.println("Console ClientApplication")
 ``

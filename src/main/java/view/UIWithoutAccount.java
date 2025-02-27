@@ -1,8 +1,7 @@
 package view;
 
 import bean.UserBean;
-import connection.client.Client;
-import controller.UserController;
+import connection.Client;
 import model.dto.RegisterDto;
 import model.dto.ResponseUserDto;
 import utils.GetMachineIP;

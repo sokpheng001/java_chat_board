@@ -1,9 +1,9 @@
 package bean;
 
-import controller.UserController;
+import client.controller.UserController;
 import mapper.UserManualMapper;
-import repository.UserRepositoryImpl;
-import repository.abstraction.UserRepository;
+import client.repository.UserRepositoryImpl;
+import client.repository.abstraction.UserRepository;
 
 /**
  * <h>This class is created for manage the User class's object</h>

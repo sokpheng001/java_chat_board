@@ -1,4 +1,4 @@
-package service;
+package client.service;
 
 import model.User;
 import model.dto.RegisterDto;

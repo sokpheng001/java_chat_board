@@ -1,4 +1,4 @@
-package repository.abstraction;
+package client.repository.abstraction;
 
 import model.User;
 

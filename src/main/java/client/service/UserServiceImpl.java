@@ -1,7 +1,6 @@
-package service;
+package client.service;
 
 import bean.UserBean;
-import mapper.UserManualMapper;
 import model.User;
 import model.dto.RegisterDto;
 import model.dto.ResponseUserDto;

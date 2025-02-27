@@ -1,22 +1,20 @@
-package repository;
+package client.repository;
 
 
 import model.User;
-import repository.abstraction.UserRepository;
+import client.repository.abstraction.UserRepository;
 import utils.GetDatabaseConnection;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
-
-
-import static utils.LoadingFileData.properties;
 
 public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public int save(User user) {
-        String sql = "INSERT INTO users (uuid, username, email, password, is_deleted, is_verified) " +
-                "VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
+        String sql = "INSERT INTO users (uuid, user_name, email, password, is_deleted, is_verified,created_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?,?) RETURNING id";
         try {
 
             try(Connection connection  = GetDatabaseConnection.getConnection()) {
@@ -29,6 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
                     stmt.setString(4, user.getPassword());
                     stmt.setBoolean(5, user.getIsDeleted());
                     stmt.setBoolean(6, user.getIsVerified());
+                    stmt.setDate(7,Date.valueOf(LocalDate.now()));
 
                     // Execute query and get the auto-generated ID
                     ResultSet rs = stmt.executeQuery();

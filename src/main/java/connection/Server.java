@@ -1,4 +1,4 @@
-package connection.server;
+package connection;
 
 import utils.LoadingFileData;
 
