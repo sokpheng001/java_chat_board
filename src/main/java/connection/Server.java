@@ -28,7 +28,7 @@ public class Server {
         }
         );
         // start  thread as daemon mean it run in the background process
-        thread.setDaemon(true);
+//        thread.setDaemon(true);
         thread.start();
     }
 
