@@ -9,7 +9,7 @@ import java.util.Properties;
 public class Server {
     private final static Properties properties = LoadingFileData.loadingProperties();
     public static void startServer() {
-        System.out.println("[*] Started network.server  running in background...");
+        System.out.println("[*] Started server$ running in background...");
         Thread thread = new Thread(() -> {
             try {
                 assert properties != null;

@@ -11,6 +11,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class ChatConnection {
     private int id;
+    private String uuid;
     private int user1Id;
     private int user2Id;
     private Date lastMessageAt;

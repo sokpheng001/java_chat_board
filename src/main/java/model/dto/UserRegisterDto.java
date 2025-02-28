@@ -1,11 +1,13 @@
 package model.dto;
 
 import lombok.Builder;
+import java.sql.Date;
 
 @Builder
-public record RegisterDto(
+public record UserRegisterDto(
         String userName,
         String email,
-        String password
+        String password,
+        Date loginDate
 ) {
 }

@@ -8,4 +8,5 @@ public interface UserRepository {
     int save(User user);
     User findByUsername(String username);
     List<User> findAll();
+    int update(User user);
 }
