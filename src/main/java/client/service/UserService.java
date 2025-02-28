@@ -1,11 +1,13 @@
 package client.service;
 
-import model.User;
-import model.dto.RegisterDto;
+import model.dto.UserRegisterDto;
 import model.dto.ResponseUserDto;
 
+import java.util.List;
+
 public interface UserService {
-    ResponseUserDto registerUser(RegisterDto registerDto);
-    ResponseUserDto loginUser(String uniqueName);
+    ResponseUserDto registerUser(UserRegisterDto registerDto);
+    ResponseUserDto loginUser(String uniqueName, String password);
     ResponseUserDto findUserByName(String username);
+    List<ResponseUserDto> findAllUsers();
 }

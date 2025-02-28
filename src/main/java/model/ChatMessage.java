@@ -11,6 +11,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class ChatMessage {
     private Integer id;
+    private String uuid;
     private Integer senderId;
     private Integer receiverId;
     private String message;

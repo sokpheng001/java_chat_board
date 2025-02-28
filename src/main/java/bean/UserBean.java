@@ -6,9 +6,9 @@ import client.repository.UserRepositoryImpl;
 import client.repository.abstraction.UserRepository;
 
 /**
- * <h>This class is created for manage the User class's object</h>
+ * <h>This class is created for manage the User class's related object</h>
  * @author Kim Chansokpheng
- * @version 1
+ * @version 1.0
  */
 public class UserBean {
     public static UserController userController = new UserController();
