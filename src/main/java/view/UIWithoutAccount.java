@@ -3,20 +3,32 @@ package view;
 import bean.UserBean;
 import client.controller.AuthController;
 import connection.Client;
+import model.User;
 import model.dto.UserRegisterDto;
 import model.dto.ResponseUserDto;
 import utils.GetMachineIP;
 
+import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
 import utils.validation.CustomizeValidator;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class UIWithoutAccount {
     private final static AuthController authController = new AuthController();
+    private final static Properties properties = LoadingFileData.loadingProperties();
+    private static  int serverPort ;
+    private static String serverIpAddress;
+    static {
+        assert properties != null;
+        serverPort = Integer.parseInt(properties.getProperty("server_port"));
+        serverIpAddress = GetMachineIP.getMachineIP();
+    }
+
     private static UserRegisterDto getRegisterDto() {
         String name=null, email=null, password=null;
         while (name==null || email==null || password==null) {
@@ -43,7 +55,9 @@ public class UIWithoutAccount {
     }
     public static void home(){
         System.out.println("----");
-        if(Client.testConnection(GetMachineIP.getMachineIP(),1234)){
+        // check if client has been connected to client
+        assert properties != null;
+        if(Client.testConnection(serverIpAddress,serverPort)){
             while (true){
                 System.out.println("""
                 ===================================
@@ -69,13 +83,14 @@ public class UIWithoutAccount {
     private static void switchOpt(int opt){
         switch (opt){
             case 1 ->{
+                // register
                 System.out.println("----");
                 ResponseUserDto responseUserDto = UserBean.userController.register(getRegisterDto());
                 if(responseUserDto!=null){
                     // write user uuid to file in order to check if user has been login or not
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile(responseUserDto.uuid());
                     // connection new client to the server
-                    new Client().getClient(GetMachineIP.getMachineIP(),1234, responseUserDto);
+                    new Client().getClientSocket(serverIpAddress,serverPort,false ,responseUserDto);
                     System.out.println("------\n[+] User data created: " + responseUserDto);
                     UIWithAccount.home();
                 }
@@ -88,9 +103,14 @@ public class UIWithoutAccount {
                 System.out.print("[+] Insert password: ");
                 String password = new Scanner(System.in).nextLine();
                 if(authController.login(username, password)!=null){
+                    ResponseUserDto responseUserDto = UserBean.userController.getUserByName(username);
+//                    // write user uuid to file in order to check if user has been login or not
+                    WriteDataForVerifyLoginStatus.writeDataOfStatusToFile(responseUserDto.uuid());
+//                    // get connection to server
+                    new Client().getClientSocket(serverIpAddress,serverPort,true ,responseUserDto);
                     UIWithAccount.home();
                 }else{
-                    System.out.println("☹️ Login failed");
+                    System.out.println("☹ Login failed");
                 }
                 pressToNext();
             }

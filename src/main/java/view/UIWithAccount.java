@@ -28,7 +28,7 @@ public class UIWithAccount {
         switch (opt){
             case 1 ->{
                 System.out.println("----");
-                UserBean.userController.getAllUsers().forEach(System.out::println);
+
                 System.out.println("----");
             }case 2 ->{
                 System.out.println("----");
