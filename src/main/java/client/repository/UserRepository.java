@@ -1,8 +1,8 @@
 package client.repository;
 
 
+import client.repository.abstraction.SokPhengRepository;
 import model.User;
-import client.repository.abstraction.UserRepository;
 import utils.GetDatabaseConnection;
 
 import java.sql.*;
@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepository implements SokPhengRepository<User, Integer> {
     private User extractUserFromResultSet(ResultSet rs) throws SQLException {
         return new User(
                 rs.getLong("id"),
@@ -25,7 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public int save(User user) {
+    public Integer save(User user) {
         String sql = "INSERT INTO users (uuid, user_name, email, password, is_deleted, is_verified,created_at) " +
                 "VALUES (?, ?, ?, ?, ?, ?,?) RETURNING id";
         try {
@@ -56,7 +56,6 @@ public class UserRepositoryImpl implements UserRepository {
         return 0;
     }
 
-    @Override
     public User findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE user_name = ?";
         try (Connection connection = GetDatabaseConnection.getConnection()) {
@@ -95,7 +94,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public int update(User user) {
+    public Integer delete(Integer id) {
+        return 0;
+    }
+
+    @Override
+    public Integer update(Integer id) {
+        return 0;
+    }
+
+    public Integer update(User user) {
         String sql = "UPDATE users SET user_name = ?, email = ?, password = ?, " +
                 "is_deleted = ?, is_verified = ?, login_date = ? WHERE uuid = ?";
 
@@ -119,5 +127,23 @@ public class UserRepositoryImpl implements UserRepository {
         }
         return 0;
 
+    }
+
+    public User findUserByUuid(String uuid) {
+        String sql = "SELECT * FROM users WHERE uuid = ?";
+        try (Connection connection = GetDatabaseConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, uuid);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+
+                    return extractUserFromResultSet(rs);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("[!] Error finding user by username: " + e.getMessage());
+        }
+        return null;
     }
 }

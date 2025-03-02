@@ -1,7 +1,6 @@
 package client.controller;
 
-import bean.UserBean;
-import client.service.UserService;
+import client.service.abstraction.UserService;
 import client.service.UserServiceImpl;
 import model.dto.ResponseUserDto;
 

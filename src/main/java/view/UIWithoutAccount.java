@@ -14,6 +14,7 @@ import utils.validation.CustomizeValidator;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -54,10 +55,16 @@ public class UIWithoutAccount {
         return new UserRegisterDto(name, email, password, Date.valueOf(LocalDate.now()));
     }
     public static void home(){
+
         System.out.println("----");
         // check if client has been connected to client
         assert properties != null;
         if(Client.testConnection(serverIpAddress,serverPort)){
+            // check if user has been login
+            if(!Objects.equals(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()), "null")){
+                UIWithAccount.home();
+                return;
+            }
             while (true){
                 System.out.println("""
                 ===================================

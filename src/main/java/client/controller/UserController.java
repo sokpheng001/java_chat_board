@@ -1,6 +1,6 @@
 package client.controller;
 
-import client.service.UserService;
+import client.service.abstraction.UserService;
 import client.service.UserServiceImpl;
 import model.dto.UserRegisterDto;
 import model.dto.ResponseUserDto;
@@ -18,5 +18,8 @@ public class UserController {
     }
     public ResponseUserDto getUserByName(String username){
         return userService.findUserByName(username);
+    }
+    public ResponseUserDto getUserByUuid(String uuid){
+        return userService.getUserByUuid(uuid);
     }
 }

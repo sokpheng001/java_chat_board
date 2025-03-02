@@ -1,4 +1,4 @@
-package client.service;
+package client.service.abstraction;
 
 import model.dto.UserRegisterDto;
 import model.dto.ResponseUserDto;
@@ -10,4 +10,5 @@ public interface UserService {
     ResponseUserDto loginUser(String uniqueName, String password);
     ResponseUserDto findUserByName(String username);
     List<ResponseUserDto> findAllUsers();
+    ResponseUserDto getUserByUuid(String uuid);
 }

@@ -21,8 +21,9 @@ public class Client {
         System.out.println("[+] Connected to server " + host + " on port " + port);
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
+//             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//             BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))
+             ) {
             // send data to server
             if(!isLogin){
                 out.println("Hello Server, I am new user: " +  responseUserDto.name());
