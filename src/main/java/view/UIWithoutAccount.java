@@ -6,6 +6,7 @@ import connection.Client;
 import model.User;
 import model.dto.UserRegisterDto;
 import model.dto.ResponseUserDto;
+import server.repository.ServerRepository;
 import utils.GetMachineIP;
 import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
@@ -26,7 +27,7 @@ public class UIWithoutAccount {
     static {
         assert properties != null;
         serverPort = Integer.parseInt(properties.getProperty("server_port"));
-        serverIpAddress = GetMachineIP.getMachineIP();
+        serverIpAddress = ServerRepository.findFirstServerRowData().ipAddress();
     }
 
     private static UserRegisterDto getRegisterDto() {
