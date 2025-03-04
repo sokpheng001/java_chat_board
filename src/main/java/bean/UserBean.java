@@ -1,6 +1,7 @@
 package bean;
 
 import client.controller.UserController;
+import client.repository.UserRepository;
 import mapper.UserManualMapper;
 
 /**
@@ -9,6 +10,7 @@ import mapper.UserManualMapper;
  * @version 1.0
  */
 public class UserBean {
-    public static UserController userController = new UserController();
-    public static UserManualMapper userManualMapper = new UserManualMapper();
+    public static final UserController userController = new UserController();
+    public static final UserManualMapper userManualMapper = new UserManualMapper();
+    public static final UserRepository userRepository = new UserRepository();
 }

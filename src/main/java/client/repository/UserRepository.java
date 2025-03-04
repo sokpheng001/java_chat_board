@@ -142,7 +142,24 @@ public class UserRepository implements SokPhengRepository<User, Integer> {
                 }
             }
         } catch (Exception e) {
-            System.out.println("[!] Error finding user by username: " + e.getMessage());
+            System.out.println("[!] Error finding user by uuid: " + e.getMessage());
+        }
+        return null;
+    }
+    public User findUserById(Integer id){
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection connection = GetDatabaseConnection.getConnection()) {
+            assert connection != null;
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setLong(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+
+                    return extractUserFromResultSet(rs);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("[!] Error finding user by id: " + e.getMessage());
         }
         return null;
     }

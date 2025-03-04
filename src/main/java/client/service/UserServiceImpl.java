@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository = new UserRepository();
     @Override
     public ResponseUserDto registerUser(UserRegisterDto registerDto) {
         try{
@@ -25,7 +24,7 @@ public class UserServiceImpl implements UserService {
                 // hash user password
                 user.setPassword(CustomizeHashing.hashing(user.getPassword()));
                 //
-                int result = userRepository.save(user);// save user to database
+                int result = UserBean.userRepository.save(user);// save user to database
                 if(result!=0){
                     return UserBean.userManualMapper.fromUserToResponseUserDto(user);
                 }
@@ -39,10 +38,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseUserDto loginUser(String uniqueName, String password) {
-        User user  = userRepository.findByUsername(uniqueName);
+        User user  = UserBean.userRepository.findByUsername(uniqueName);
         user.setLoginDate(Date.valueOf(LocalDate.now()));
         if(CustomizeHashing.hashing(password).equals(user.getPassword())){
-            userRepository.update(user);
+            UserBean.userRepository.update(user);
             return UserBean.userManualMapper.fromUserToResponseUserDto(user);
         }
         return null;
@@ -50,13 +49,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseUserDto findUserByName(String username) {
-        return UserBean.userManualMapper.fromUserToResponseUserDto(userRepository.findByUsername(username));
+        return UserBean.userManualMapper.fromUserToResponseUserDto(UserBean.userRepository.findByUsername(username));
     }
 
     @Override
     public List<ResponseUserDto> findAllUsers() {
         List<ResponseUserDto> responseUserDtos = new ArrayList<>();
-        userRepository.findAll().forEach(user -> {
+        UserBean.userRepository.findAll().forEach(user -> {
             responseUserDtos.add(UserBean.userManualMapper.fromUserToResponseUserDto(user));
         });
         return responseUserDtos;
@@ -64,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseUserDto getUserByUuid(String uuid) {
-        User user = userRepository.findUserByUuid(uuid);
+        User user = UserBean.userRepository.findUserByUuid(uuid);
         return UserBean.userManualMapper.fromUserToResponseUserDto(user);
     }
 }

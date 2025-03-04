@@ -12,9 +12,9 @@ import java.sql.Date;
 @NoArgsConstructor
 @Builder
 public class ChatConnection {
-    private int id;
+    private Long id;
     private String uuid;
-    private int loginUserId;
-    private int wantedToConnectUserId;
+    private Long loginUserId;
+    private Long wantedToConnectUserId;
     private Date lastMessageAt;
 }

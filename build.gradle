@@ -5,6 +5,7 @@ plugins {
 group = 'com.sokpheng'
 version = '1.0-SNAPSHOT'
 
+
 repositories {
     mavenCentral()
 }
@@ -19,6 +20,8 @@ dependencies {
     // gradle
     implementation 'org.postgresql:postgresql:42.7.2'
 
+// https://mvnrepository.com/artifact/org.nocrala.tools.texttablefmt/text-table-formatter
+    implementation 'org.nocrala.tools.texttablefmt:text-table-formatter:1.2.4'
 
 
 }

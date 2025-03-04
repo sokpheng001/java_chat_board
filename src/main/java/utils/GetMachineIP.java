@@ -30,14 +30,14 @@ public class GetMachineIP {
                     // Check if it's an IPv4 address and part of a private network
                     if (inetAddress instanceof Inet4Address && !inetAddress.isLoopbackAddress()) {
                         String ip = inetAddress.getHostAddress();
-//                        if (ip.startsWith("192.168.") || ip.startsWith("10.") || ip.startsWith("172.")) {
-////                            System.out.println("Local Network IP: " + ip);
-//                            return ip;
-//                        }
-                        if (ip.startsWith("192.168.")) {
+                        if (ip.startsWith("192.168.") || ip.startsWith("10.") || ip.startsWith("172.")) {
 //                            System.out.println("Local Network IP: " + ip);
                             return ip;
                         }
+//                        if (ip.startsWith("192.168.")) {
+////                            System.out.println("Local Network IP: " + ip);
+//                            return ip;
+//                        }
                     }
                 }
             }
