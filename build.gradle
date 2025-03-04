@@ -1,10 +1,10 @@
 plugins {
     id 'java'
+    id 'application'  // Required for the application block
 }
 
 group = 'com.sokpheng'
 version = '1.0-SNAPSHOT'
-
 
 repositories {
     mavenCentral()
@@ -13,17 +13,23 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-//    lombok
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
-    // gradle
+
     implementation 'org.postgresql:postgresql:42.7.2'
-
-// https://mvnrepository.com/artifact/org.nocrala.tools.texttablefmt/text-table-formatter
     implementation 'org.nocrala.tools.texttablefmt:text-table-formatter:1.2.4'
+}
 
+// 🔹 Ensure your ClientApplication class has a valid package
+application {
+    mainClass = 'ClientApplication'  // Update with actual package
+}
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'ClientApplication'  // Update with actual package
+    }
 }
 
 test {

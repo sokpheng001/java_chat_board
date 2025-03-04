@@ -1,8 +1,12 @@
 package connection;
 
+import bean.UserBean;
+import model.dto.ResponseUserDto;
 import server.repository.ServerRepository;
 import utils.GetMachineIP;
 import utils.LoadingFileData;
+import utils.WriteDataForVerifyLoginStatus;
+import view.ClientChatUI;
 
 import java.io.*;
 import java.net.*;
@@ -12,6 +16,8 @@ import java.util.Properties;
 
 public class Server {
     private final static Properties properties = LoadingFileData.loadingProperties();
+    private final static ResponseUserDto currentUser = UserBean.userController
+            .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
     public static void startServer() {
 //        System.out.println("[*] Started server running in background...");
         Thread thread = new Thread(() -> {
@@ -29,8 +35,6 @@ public class Server {
                         System.out.println("[+] Server IP Address: " + serverIpAddress);
                         System.out.println("[+] Server Port: " + serverPort);
                         System.out.println("---");
-
-
                         //
                         while (true) {
                             Socket clientSocket = serverSocket.accept();
@@ -38,9 +42,12 @@ public class Server {
                             System.out.println("[+] Client Port: " + clientSocket.getPort());
                             // receive data from client
                             BufferedReader in  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                            System.out.println("[->] Message from client: " + in.readLine());
-                            System.out.println("TimeStamp: " + Date.from(Instant.now()));
+                            System.out.println("[*] Message from client: " + in.readLine());
+                            System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                             System.out.println("---");
+                            // start chat
+                            ClientChatUI clientChatUI = new ClientChatUI(clientSocket, currentUser.name());
+                            new Thread(clientChatUI).start();
                         }
                     }
 

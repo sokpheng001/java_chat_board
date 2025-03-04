@@ -2,20 +2,36 @@ package view;
 
 import bean.ChatConnectionBean;
 import bean.UserBean;
+import connection.Client;
 import model.dto.CreateChatConnectionUsingUserNameDto;
 import model.dto.ResponseUserDto;
 import org.nocrala.tools.texttablefmt.Table;
+import utils.GetMachineIP;
+import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class UIWithAccount {
     // get login user info
     private static final String userUuidFromLogin = String.valueOf(WriteDataForVerifyLoginStatus.isLogin());
     private static final ResponseUserDto loginUser = UserBean.userController.getUserByUuid(userUuidFromLogin);
+    private final static Properties properties = LoadingFileData.loadingProperties();
+    private final static ResponseUserDto currentUser = UserBean.userController
+            .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
+    private static int serverPort;
+    private static String serverIpAddress;
+
+    static {
+        assert properties != null;
+        serverPort = Integer.parseInt(properties.getProperty("server_port"));
+        serverIpAddress = GetMachineIP.getMachineIP();
+    }
     private static void pressToNext(){
         System.out.print("> Press enter to continue: ");
         new Scanner(System.in).nextLine();
@@ -56,10 +72,8 @@ public class UIWithAccount {
                 System.out.println("----");
                 System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
                 // get all connected user
-                List<ResponseUserDto> connectedUsers = ChatConnectionBean.controller.getAllConnectedUser(
-                        String.valueOf(WriteDataForVerifyLoginStatus.isLogin())
-                );
-
+                List<ResponseUserDto> connectedUsers = ChatConnectionBean.controller
+                        .getAllConnectedUser(currentUser.uuid());
                 if(connectedUsers.isEmpty()){
                     System.out.println("""
                 ===================================
@@ -67,6 +81,15 @@ public class UIWithAccount {
                 ===================================""");
                 }else {
                     UserViewTable.getTable(connectedUsers);
+                    System.out.println("---");
+                    System.out.print("[+] Enter connector name to chat: ");
+                    String cName = new Scanner(System.in).nextLine();
+                    ResponseUserDto conn = UserBean.userController.getUserByName(cName);
+//                    if(conn!=null){
+//                        new Client().getClientChatSocket(serverIpAddress, serverPort);
+//                    }
+                    new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name() ,conn);
+
                     System.out.println("----");
                 }
                 pressToNext();
