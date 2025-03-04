@@ -6,6 +6,7 @@ import connection.Client;
 import model.dto.CreateChatConnectionUsingUserNameDto;
 import model.dto.ResponseUserDto;
 import org.nocrala.tools.texttablefmt.Table;
+import server.repository.ServerRepository;
 import utils.GetMachineIP;
 import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
@@ -30,7 +31,7 @@ public class UIWithAccount {
     static {
         assert properties != null;
         serverPort = Integer.parseInt(properties.getProperty("server_port"));
-        serverIpAddress = GetMachineIP.getMachineIP();
+        serverIpAddress = ServerRepository.findFirstServerRowData().ipAddress();
     }
     private static void pressToNext(){
         System.out.print("> Press enter to continue: ");
