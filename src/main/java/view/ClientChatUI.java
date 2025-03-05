@@ -58,6 +58,7 @@ public class ClientChatUI implements Runnable {
 
     // Method to forward the message to other clients (excluding the sender)
     private void forwardMessageToOtherClients(String sender, String message) throws IOException {
+        System.out.println(sender);
         synchronized (clientHandlers) {
             for (Map.Entry<String, ClientChatUI> entry : clientHandlers.entrySet()) {
                 ClientChatUI recipientHandler = entry.getValue();
