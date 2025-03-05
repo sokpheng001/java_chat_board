@@ -45,6 +45,7 @@ public class Client {
 
     // Method to start the chat functionality
     public void getClientChatSocket(String host, int port, String sender,ResponseUserDto receiver) {
+
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
@@ -52,13 +53,22 @@ public class Client {
 
             // Send login info when the user connects
             out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
+
+//            out.flush();
             // Thread to receive messages from the server
             Thread listenThread = new Thread(() -> {
                 try {
-                    String serverMessage;
-                    while ((serverMessage = in.readLine()) != null) {
+                    System.out.println(in.readLine());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                try {
+                    while (true) {
+                        if(in.ready()){
+                            String message = in.readLine();
+                            System.out.print(message);
+                        }
                         // Display incoming messages from the server (i.e., messages from other clients)
-                        System.out.println(serverMessage);
                     }
                 } catch (IOException e) {
                     System.out.println("[!] Error while receiving messages: " + e.getMessage());
@@ -73,6 +83,7 @@ public class Client {
                 message = consoleInput.readLine();
                 if ("exit".equalsIgnoreCase(message)) {
                     out.println("User [" + sender + "] has left the chat.");
+                    out.close();
                     return;
                 }
                 // Send the message to the server

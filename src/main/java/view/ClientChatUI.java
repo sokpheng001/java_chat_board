@@ -1,13 +1,20 @@
 package view;
 
+import bean.UserBean;
+import lombok.Data;
+import model.dto.ResponseUserDto;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@Data
 public class ClientChatUI implements Runnable {
     private Socket clientSocket;
     private PrintWriter out;
@@ -26,13 +33,16 @@ public class ClientChatUI implements Runnable {
     public void run() {
         try {
             // Register client handler in the server
-            clientHandlers.put(username, this);
-//            synchronized (clientHandlers) {
-//                clientHandlers.put(username, this);
-//            }
+
+            List<ResponseUserDto> responseUserDtoList = UserBean.userController.getAllUsers();
+
+            synchronized (clientHandlers) {
+                responseUserDtoList.forEach(e->clientHandlers.put(e.name(), this));
+            }
             String message;
             while ((message = in.readLine()) != null) {
                 if (message.equalsIgnoreCase("exit")) {
+                    in.close();
                     return;  // Disconnect when "exit" is typed
                 }
                 System.out.println("[->] Message from " + username + ": " + message);
@@ -58,14 +68,13 @@ public class ClientChatUI implements Runnable {
 
     // Method to forward the message to other clients (excluding the sender)
     private void forwardMessageToOtherClients(String sender, String message) throws IOException {
-        System.out.println(sender);
         synchronized (clientHandlers) {
             for (Map.Entry<String, ClientChatUI> entry : clientHandlers.entrySet()) {
                 ClientChatUI recipientHandler = entry.getValue();
                 // Send message to all clients except the sender
-                if (!recipientHandler.username.equals(sender)) {
+//                if (!recipientHandler.username.equals(sender)) {
                     recipientHandler.out.println("[" + sender + "]: " + message);
-                }
+//                }
             }
         }
     }

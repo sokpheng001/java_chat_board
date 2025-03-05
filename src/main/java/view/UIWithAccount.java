@@ -89,11 +89,11 @@ public class UIWithAccount {
                     System.out.print("[+] Enter connector name to chat: ");
                     String cName = new Scanner(System.in).nextLine();
                     ResponseUserDto conn = UserBean.userController.getUserByName(cName);
-//                    if(conn!=null){
-//                        new Client().getClientChatSocket(serverIpAddress, serverPort);
-//                    }
-                    new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name() ,conn);
-
+                    if(conn!=null){
+                        new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name() ,conn);
+                    }else {
+                        System.out.println("[!] Connector not found :(.");
+                    }
                     System.out.println("----");
                 }
                 pressToNext();
