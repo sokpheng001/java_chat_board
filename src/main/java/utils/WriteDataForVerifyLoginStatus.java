@@ -1,13 +1,16 @@
 package utils;
 
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
 public class WriteDataForVerifyLoginStatus {
+    public static String temporaryCurrenUsername = null;
     public static void writeDataOfStatusToFile(String userUuid) {
-        try(FileWriter fileWriter = new FileWriter("isLogin.txt")) {
+        try(BufferedWriter writer= new BufferedWriter(new FileWriter("isLogin.txt")) ) {
 //            fileWriter.write(userUuid + "\n");
-            fileWriter.write(userUuid);
+            writer.write(userUuid);
+            writer.flush();// Ensure data is written immediately
         }catch (Exception exception){
             System.out.println("[!] Error while writing to register file: " + exception.getMessage());
         }

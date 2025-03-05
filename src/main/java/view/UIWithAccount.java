@@ -40,7 +40,7 @@ public class UIWithAccount {
     public static void home(){
         // get welcome
         System.out.println("---");
-        String welcome = "🌟 Welcome Again, " + loginUser.name() + "! 🌟";
+        String welcome = "🌟 Welcome Again, " + WriteDataForVerifyLoginStatus.temporaryCurrenUsername + "! 🌟";
         try{
             for(int i=0;i<welcome.length();i++){
                 Thread.sleep(100);

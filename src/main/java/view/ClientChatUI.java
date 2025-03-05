@@ -22,14 +22,14 @@ public class ClientChatUI implements Runnable {
         this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         this.username = username;
     }
-
     @Override
     public void run() {
         try {
             // Register client handler in the server
-            synchronized (clientHandlers) {
-                clientHandlers.put(username, this);
-            }
+            clientHandlers.put(username, this);
+//            synchronized (clientHandlers) {
+//                clientHandlers.put(username, this);
+//            }
             String message;
             while ((message = in.readLine()) != null) {
                 if (message.equalsIgnoreCase("exit")) {
@@ -40,7 +40,7 @@ public class ClientChatUI implements Runnable {
                 forwardMessageToOtherClients(username, message);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("[!] Error retrieve message from client: " + e.getMessage());
         } finally {
             // Remove the client from the active list and close the connection
             try {
@@ -51,7 +51,7 @@ public class ClientChatUI implements Runnable {
                 System.out.println("[+] Client disconnected.");
                 System.out.println("---");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("[!] Error during disconnecting client: " + e.getMessage());
             }
         }
     }
