@@ -38,6 +38,9 @@ public class UIWithAccount {
         new Scanner(System.in).nextLine();
     }
     public static void home(){
+        if(WriteDataForVerifyLoginStatus.temporaryCurrenUsername==null){
+            WriteDataForVerifyLoginStatus.temporaryCurrenUsername = currentUser.name();
+        }
         // get welcome
         System.out.println("---");
         String welcome = "🌟 Welcome Again, " + WriteDataForVerifyLoginStatus.temporaryCurrenUsername + "! 🌟";
