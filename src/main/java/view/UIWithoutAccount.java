@@ -119,6 +119,7 @@ public class UIWithoutAccount {
                     ResponseUserDto responseUserDto = UserBean.userController.getUserByName(username);
                     // Write user uuid to file to verify login status
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile(responseUserDto.uuid());
+                    WriteDataForVerifyLoginStatus.temporaryCurrenUsername = username;
                     // Connect to server
                     new Client().getLoginSocket(serverIpAddress, serverPort, true, responseUserDto);
                     UIWithAccount.home();

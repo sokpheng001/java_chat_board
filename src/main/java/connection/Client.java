@@ -47,12 +47,11 @@ public class Client {
     public void getClientChatSocket(String host, int port, String sender,ResponseUserDto receiver) {
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
 
             // Send login info when the user connects
             out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
-
             // Thread to receive messages from the server
             Thread listenThread = new Thread(() -> {
                 try {
