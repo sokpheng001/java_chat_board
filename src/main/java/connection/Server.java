@@ -43,36 +43,6 @@ public class Server {
                         Socket clientSocket = serverSocket.accept();
                         System.out.println("[+] Client IP connected: " + clientSocket.getInetAddress());
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
-
-                        // Initialize input and output streams
-                        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                        // Read the username (first message from client)
-                        String username = in.readLine();
-                        Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream()
-                                .filter(e -> e.name().equals(username))
-                                .findFirst();
-                        if (user.isPresent()) {
-                            senderName = user.get().name();
-                            System.out.println("[+] User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
-                            // Inform the client that they have joined
-                            out.println("[Server]:  Hello, " + senderName );
-                        } else {
-                            out.println("User not found.");
-                        }
-                        System.out.println("---");
-
-                        // Read and print further messages from client
-                        String message;
-                        while ((message = in.readLine()) != null) {
-                            if (!message.isEmpty()) {
-                                System.out.println("[*] Message from client: " + message);
-                            }
-                        }
-                        // Timestamp for the connection
-                        System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
-                        System.out.println("---");
-
                         // Start a new thread to handle the client communication
                         new Thread(new ClientHandler(clientSocket)).start();
                     }
@@ -90,9 +60,7 @@ public class Server {
         public ClientHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
-
-// Inside the ClientHandler class
-
+        // Inside the ClientHandler class
         @Override
         public void run() {
             try (
@@ -108,7 +76,6 @@ public class Server {
                     return;
                 }
                 System.out.println("[+] Server Username: " + username);
-
                 // Fetch user from database
                 Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream()
                         .filter(e -> e.name().equals(username))
@@ -117,7 +84,8 @@ public class Server {
                 if (user.isPresent()) {
                     String senderName = user.get().name(); // Get user's name
                     System.out.println("[+] User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
-                    out.println("->[Server]:  Hello, " + senderName); // Send a greeting to the client
+                    System.out.println("---");
+                    out.println("[Server]:  Hello, " + senderName); // Send a greeting to the client
                 } else {
                     out.println("User not found.");
                     clientSocket.close();
@@ -137,8 +105,7 @@ public class Server {
                 System.out.println("---");
 
                 // Start chat interface for the client
-                ClientChatUI clientChatUI = new ClientChatUI(clientSocket, username);
-                new Thread(clientChatUI).start();
+//                new Thread(new ClientChatUI(clientSocket, username)).start();
 
             } catch (IOException e) {
                 System.out.println("[!] Error while handling client: " + e.getMessage());

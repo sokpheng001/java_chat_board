@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class Client {
     private Socket socket;
+    private     boolean isServerResponse = false;
     public  boolean testConnection(Socket clientSocket) {
         this.socket  = clientSocket;
         Socket socket = this.socket ;
@@ -78,10 +79,10 @@ public class Client {
             // Loop to send messages to the server
             chatUI(receiver.name());
             String message;
-
             while (isChatActive[0]) {
                 // using this to check if server response with message don't allow users to enter, wait for server respond success                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      any message
                 if(!in.ready()) {
+                    isServerResponse = true;
                     System.out.print("[You]: ");
                     message = consoleInput.readLine();
                     if ("exit".equalsIgnoreCase(message)) {
