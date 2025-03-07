@@ -52,7 +52,7 @@ public class Client {
                         if (in.ready()) {
                             String message = in.readLine();
                             System.out.print("\r" + " ".repeat(50) + "\r"); // Clear input line
-                            System.out.println("[Server]: " + message);
+                            System.out.println(message);
                             System.out.print("[You]: "); // Restore prompt
                         }
                     }

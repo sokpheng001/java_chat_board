@@ -44,7 +44,7 @@ public class Server {
                         System.out.println("[+] Client IP connected: " + clientSocket.getInetAddress());
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
                         System.out.println("---");
-
+                        //
                         // Start a new thread for the client
                         ClientHandler clientHandler = new ClientHandler(clientSocket);
                         clients.add(clientHandler);
@@ -83,15 +83,15 @@ public class Server {
                     return;
                 }
 
-                System.out.println("[+] Server Username: " + username);
+                System.out.println("[+] User connected to server: " + username);
                 Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream()
                         .filter(e -> e.name().equals(username))
                         .findFirst();
-
                 if (user.isPresent()) {
                     System.out.println("[+] User [" + username + "] has joined the chat at " + Date.from(Instant.now()));
                     System.out.println("---");
-                    out.println("->[Server]: Hello, " + username);
+                    out.println("[Server]: Hello, " + username);
+                    System.out.println("--");
                     sendToAll("[+] User [" + username + "] has joined the chat.", this);
                 } else {
                     System.out.println("[!] User not found in database. Disconnecting...");
