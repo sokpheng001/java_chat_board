@@ -38,7 +38,6 @@ public class Server {
                         Socket clientSocket = serverSocket.accept();
                         System.out.println("[+] Client IP connected: " + clientSocket.getInetAddress());
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
-                        System.out.println("---");
                         // receive data from client
                         BufferedReader in  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                         if(in.readLine()!=null){
@@ -47,7 +46,7 @@ public class Server {
                         System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                         System.out.println("---");
                         // start chat
-                        ClientChatUI clientChatUI = new ClientChatUI(clientSocket, currentUser.name());
+                        ClientChatUI clientChatUI = new ClientChatUI(clientSocket);
                         new Thread(clientChatUI).start();
                     }
                 }

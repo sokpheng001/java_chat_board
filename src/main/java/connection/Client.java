@@ -54,6 +54,7 @@ public class Client {
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
 
             // Send login info when the user connects
+            out.println(receiver.name()); // send name to server for identify who the user is
             out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
 
             // Thread to receive messages from the server
