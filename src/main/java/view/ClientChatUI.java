@@ -36,6 +36,7 @@ public class ClientChatUI implements Runnable {
             synchronized (clientHandlers) {
                 clientHandlers.put(username, this);
             }
+            System.out.println(clientHandlers.size());
             String message;
             while ((message = in.readLine()) != null) {
                 if (message.equalsIgnoreCase("exit")) {
