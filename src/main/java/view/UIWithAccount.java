@@ -93,7 +93,7 @@ public class UIWithAccount {
                             .findFirst()
                             .orElse(null);  // Avoid exceptions
                     if (receiver != null) {
-                        new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name(), receiver);
+                        new Client().getClientChatSocket(serverIpAddress, serverPort, WriteDataForVerifyLoginStatus.temporaryCurrenUsername, receiver);
                     } else {
                         System.out.println("[!] Connector not found :(.");
                     }

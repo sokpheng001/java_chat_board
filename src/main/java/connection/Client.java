@@ -56,7 +56,7 @@ public class Client {
 
             // Send login info when the user connects
             out.println(sender); // send name to server for identify who the user is
-            out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
+//            out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
 
             // Thread to receive messages from the server
             Thread listenThread = new Thread(() -> {

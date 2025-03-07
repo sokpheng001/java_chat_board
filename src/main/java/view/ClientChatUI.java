@@ -43,7 +43,7 @@ public class ClientChatUI implements Runnable {
                 }
                 System.out.println("[->] Message from [" + clientSocket.getInetAddress() + "]: " + message);
                 // Forward the message to other clients (except sender)
-                forwardMessageToOtherClients(username, message);
+//                forwardMessageToOtherClients(username, message);
             }
         } catch (IOException e) {
             System.out.println("[!] Error retrieve message from client: " + e.getMessage());
