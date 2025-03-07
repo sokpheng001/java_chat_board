@@ -7,21 +7,21 @@ import server.repository.ServerRepository;
 import utils.GetMachineIP;
 import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
-import view.ClientChatUI;
 
 import java.io.*;
 import java.net.*;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Properties;
 
 public class Server {
     private final static Properties properties = LoadingFileData.loadingProperties();
     private final static ResponseUserDto currentUser = UserBean.userController
             .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
-    private String senderName = null;
-    private ClientChatUI chatUI = new ClientChatUI();
+
+    // Store active clients
+    private static final Set<ClientHandler> clients = ConcurrentHashMap.newKeySet();
 
     public void startServer() {
         try {
@@ -30,7 +30,6 @@ public class Server {
             String serverIpAddress = GetMachineIP.getMachineIP();
 
             try (ServerSocket serverSocket = new ServerSocket(serverPort)) {
-                // Set server IP to database for all clients to use
                 int serverId = ServerRepository.insertServerIPAddressToDbAndReturnServerRowId(serverIpAddress, serverPort);
                 if (serverId > 0) {
                     System.out.println("[+] Server info successfully added to database");
@@ -45,9 +44,11 @@ public class Server {
                         System.out.println("[+] Client IP connected: " + clientSocket.getInetAddress());
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
                         System.out.println("---");
-                        // Start a new thread to handle the client communication
-                        new Thread(new ClientHandler(clientSocket)).start();
 
+                        // Start a new thread for the client
+                        ClientHandler clientHandler = new ClientHandler(clientSocket);
+                        clients.add(clientHandler);
+                        new Thread(clientHandler).start();
                     }
                 }
             }
@@ -56,68 +57,80 @@ public class Server {
         }
     }
 
-    // Inner class to handle each client connection
     class ClientHandler implements Runnable {
         private final Socket clientSocket;
+        private PrintWriter out;
+        private String username;
 
         public ClientHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
-        // Inside the ClientHandler class
+
         @Override
         public void run() {
             try (
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
             ) {
-                // Read the username (first message from client)
-                String username = in.readLine();
+                this.out = out;
+
+                // Read username
+                username = in.readLine();
                 if (username == null || username.isEmpty()) {
                     System.out.println("[!] Username is null or empty, disconnecting client.");
                     out.println("User not found.");
                     clientSocket.close();
                     return;
                 }
+
                 System.out.println("[+] Server Username: " + username);
-                // Fetch user from database
                 Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream()
                         .filter(e -> e.name().equals(username))
                         .findFirst();
 
                 if (user.isPresent()) {
-                    senderName = user.get().name(); // Get user's name
-                    System.out.println("[+] User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
+                    System.out.println("[+] User [" + username + "] has joined the chat at " + Date.from(Instant.now()));
                     System.out.println("---");
-                    out.println("[Server]:  Hello, " + senderName); // Send a greeting to the client
+                    out.println("->[Server]: Hello, " + username);
+                    sendToAll("[+] User [" + username + "] has joined the chat.", this);
                 } else {
+                    System.out.println("[!] User not found in database. Disconnecting...");
                     out.println("User not found.");
                     clientSocket.close();
                     return;
                 }
-                // Start chat interface for the client
-                if(senderName!=null){
-                    chatUI.getUI(clientSocket, senderName);
-                }
-                new Thread(chatUI).start();
 
-                // Read and handle further messages from the client
+                // Read and broadcast messages
                 String message;
                 while ((message = in.readLine()) != null) {
                     if (!message.isEmpty()) {
-                        System.out.println("[*] Message from client: " + message); // Print the message from client
+                        System.out.println("[*] Message from [" + username + "]: " + message);
+                        sendToAll("[" + username + "]: " + message, this);
                     }
                 }
 
-                // Timestamp for the connection end
+            } catch (IOException e) {
+                System.out.println("[!] Error while handling client [" + username + "]: " + e.getMessage());
+            } finally {
+                // Remove client on disconnect
+                clients.remove(this);
+                sendToAll("[+] User [" + username + "] has left the chat.", this);
+                System.out.println("[!] User [" + username + "] has disconnected.");
                 System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                 System.out.println("---");
-
-
-
-            } catch (IOException e) {
-                System.out.println("[!] Error while handling client: " + e.getMessage());
+                try {
+                    clientSocket.close();
+                } catch (IOException ignored) {}
             }
         }
 
+        // Broadcast message to all except sender
+        private void sendToAll(String message, ClientHandler sender) {
+            for (ClientHandler client : clients) {
+                if (client != sender) { // Skip sender
+                    client.out.println(message);
+                }
+            }
+        }
     }
 }
