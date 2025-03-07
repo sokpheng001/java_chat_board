@@ -56,7 +56,7 @@ public class Server {
                             senderName = user.get().name();
                             System.out.println("[+] User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
                             // Inform the client that they have joined
-                            out.println("->[Server]:  Hello, " + senderName );
+                            out.println("[Server]:  Hello, " + senderName );
                         } else {
                             out.println("User not found.");
                         }

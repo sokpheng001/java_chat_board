@@ -65,7 +65,7 @@ public class Client {
                     while (isChatActive[0]) {
                         if (in.ready()) {
                             String message = in.readLine();
-                            System.out.println("[Server]: " + message);  // Print incoming messages from other users
+                            System.out.println("\n[Server]: " + message);  // Print incoming messages from other users
                         }
                     }
                 } catch (IOException e) {
@@ -80,15 +80,18 @@ public class Client {
             String message;
 
             while (isChatActive[0]) {
-                System.out.print("[You]: ");
-                message = consoleInput.readLine();
-                if ("exit".equalsIgnoreCase(message)) {
-                    out.println("User [" + sender + "] has left the chat.");
-                    isChatActive[0] = false;
-                    break;  // Stop the chat
+                // using this to check if server response with message don't allow users to enter, wait for server respond success                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      any message
+                if(!in.ready()) {
+                    System.out.print("[You]: ");
+                    message = consoleInput.readLine();
+                    if ("exit".equalsIgnoreCase(message)) {
+                        out.println("User [" + sender + "] has left the chat.");
+                        isChatActive[0] = false;
+                        break;  // Stop the chat
+                    }
+                    // Send the message to the server
+                    out.println(message);
                 }
-                // Send the message to the server
-                out.println(message);
             }
 
             // Ensure the listener thread is stopped gracefully when chat ends
