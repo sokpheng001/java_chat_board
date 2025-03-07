@@ -20,10 +20,10 @@ public class ClientChatUI implements Runnable {
     private PrintWriter out;
     private BufferedReader in;
     private String username;
-    private final Map<String, ClientChatUI> clientHandlers = new HashMap<>();  // Mapping client login (username) to their handler
+    private  Map<String, ClientChatUI> clientHandlers = new HashMap<>();  // Mapping client login (username) to their handler
 
     // Constructor for ClientChatUI
-    public ClientChatUI() {}
+
     public void getUI(Socket socket, String senderName) throws IOException {
         this.clientSocket = socket;
         this.out = new PrintWriter(clientSocket.getOutputStream(), true);  // Ensure auto-flush
@@ -37,8 +37,9 @@ public class ClientChatUI implements Runnable {
             synchronized (clientHandlers) {
                 clientHandlers.put(username, this);
             }
-            System.out.println(clientHandlers.size());
+
             String message;
+
             while ((message = in.readLine()) != null) {
                 // Forward the message to other clients (except sender)
                 forwardMessageToOtherClients(username, message);

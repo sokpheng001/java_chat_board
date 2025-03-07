@@ -47,9 +47,7 @@ public class Server {
                         System.out.println("---");
                         // Start a new thread to handle the client communication
                         new Thread(new ClientHandler(clientSocket)).start();
-                        // Start chat interface for the client
-                        chatUI.getUI(clientSocket, senderName);
-                        new Thread(chatUI).start();
+
                     }
                 }
             }
@@ -87,7 +85,7 @@ public class Server {
                         .findFirst();
 
                 if (user.isPresent()) {
-                    String senderName = user.get().name(); // Get user's name
+                    senderName = user.get().name(); // Get user's name
                     System.out.println("[+] User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
                     System.out.println("---");
                     out.println("[Server]:  Hello, " + senderName); // Send a greeting to the client
@@ -96,6 +94,11 @@ public class Server {
                     clientSocket.close();
                     return;
                 }
+                // Start chat interface for the client
+                if(senderName!=null){
+                    chatUI.getUI(clientSocket, senderName);
+                }
+                new Thread(chatUI).start();
 
                 // Read and handle further messages from the client
                 String message;
