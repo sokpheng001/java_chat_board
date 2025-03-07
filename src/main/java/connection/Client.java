@@ -55,12 +55,11 @@ public class Client {
 
             // Send login info when the user connects
             out.println(sender); // send name to server for identify who the user is
-//            out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
 
             // Thread to receive messages from the server
             Thread listenThread = new Thread(() -> {
                 try {
-                    // Wait and display initial message
+                    // Initial message from the server
                     System.out.println(in.readLine());
                 } catch (IOException e) {
                     System.out.println("[!] Error during network connection: " + e.getMessage());
@@ -69,7 +68,7 @@ public class Client {
                     while (isChatActive[0]) {
                         if (in.ready()) {
                             String message = in.readLine();
-                            System.out.println(message);  // Print incoming messages from other users
+                            System.out.println("[Server]: " + message);  // Print incoming messages from other users
                         }
                     }
                 } catch (IOException e) {
@@ -83,20 +82,20 @@ public class Client {
             chatUI(receiver.name());
             String message;
 
-            while (true) {
+            while (isChatActive[0]) {
                 System.out.print("[You]: ");
                 message = consoleInput.readLine();
                 if ("exit".equalsIgnoreCase(message)) {
                     out.println("User [" + sender + "] has left the chat.");
-                    isChatActive[0] = false;  // Set isChatActive to false to stop the chat
-                    break;
+                    isChatActive[0] = false;
+                    break;  // Stop the chat
                 }
                 // Send the message to the server
                 out.println(message);
             }
 
-            // Close the socket after chat ends
-            socket.close();
+            // Ensure the listener thread is stopped gracefully when chat ends
+            listenThread.interrupt();  // Gracefully stop the listener thread
 
         } catch (IOException e) {
             System.out.println("[!] Error during network connection: " + e.getMessage());

@@ -92,6 +92,7 @@ public class UIWithAccount {
                             .filter(e -> e.name().equals(cName))  // Compare name instead of entire object
                             .findFirst()
                             .orElse(null);  // Avoid exceptions
+
                     if (receiver != null) {
                         new Client().getClientChatSocket(serverIpAddress, serverPort, WriteDataForVerifyLoginStatus.temporaryCurrenUsername, receiver);
                     } else {
