@@ -2,7 +2,6 @@ package connection;
 
 import bean.UserBean;
 import client.service.UserServiceImpl;
-import client.service.abstraction.UserService;
 import model.dto.ResponseUserDto;
 import server.repository.ServerRepository;
 import utils.GetMachineIP;
@@ -14,7 +13,6 @@ import java.io.*;
 import java.net.*;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -75,14 +73,77 @@ public class Server {
                         System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                         System.out.println("---");
 
-                        // Start chat interface for the client
-                        ClientChatUI clientChatUI = new ClientChatUI(clientSocket, senderName);
-                        new Thread(clientChatUI).start();
+                        // Start a new thread to handle the client communication
+                        new Thread(new ClientHandler(clientSocket)).start();
                     }
                 }
             }
         } catch (IOException e) {
             System.out.println("[!] Server Error: " + e.getMessage());
         }
+    }
+
+    // Inner class to handle each client connection
+    class ClientHandler implements Runnable {
+        private final Socket clientSocket;
+
+        public ClientHandler(Socket clientSocket) {
+            this.clientSocket = clientSocket;
+        }
+
+// Inside the ClientHandler class
+
+        @Override
+        public void run() {
+            try (
+                    BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
+            ) {
+                // Read the username (first message from client)
+                String username = in.readLine();
+                if (username == null || username.isEmpty()) {
+                    System.out.println("[!] Username is null or empty, disconnecting client.");
+                    out.println("User not found.");
+                    clientSocket.close();
+                    return;
+                }
+                System.out.println("[+] Server Username: " + username);
+
+                // Fetch user from database
+                Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream()
+                        .filter(e -> e.name().equals(username))
+                        .findFirst();
+
+                if (user.isPresent()) {
+                    String senderName = user.get().name(); // Get user's name
+                    System.out.println("[+] User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
+                    out.println("->[Server]:  Hello, " + senderName); // Send a greeting to the client
+                } else {
+                    out.println("User not found.");
+                    clientSocket.close();
+                    return;
+                }
+
+                // Read and handle further messages from the client
+                String message;
+                while ((message = in.readLine()) != null) {
+                    if (!message.isEmpty()) {
+                        System.out.println("[*] Message from client: " + message); // Print the message from client
+                    }
+                }
+
+                // Timestamp for the connection end
+                System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
+                System.out.println("---");
+
+                // Start chat interface for the client
+                ClientChatUI clientChatUI = new ClientChatUI(clientSocket, username);
+                new Thread(clientChatUI).start();
+
+            } catch (IOException e) {
+                System.out.println("[!] Error while handling client: " + e.getMessage());
+            }
+        }
+
     }
 }

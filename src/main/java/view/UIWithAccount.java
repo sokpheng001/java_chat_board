@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class UIWithAccount {
+    private Client client;
     // get login user info
     private  final String userUuidFromLogin = String.valueOf(WriteDataForVerifyLoginStatus.isLogin());
     private  final ResponseUserDto loginUser = UserBean.userController.getUserByUuid(userUuidFromLogin);
@@ -37,7 +38,7 @@ public class UIWithAccount {
         System.out.print("> Press enter to continue: ");
         new Scanner(System.in).nextLine();
     }
-    public  void home(){
+    public  void home(Client client){
         if(WriteDataForVerifyLoginStatus.temporaryCurrenUsername==null){
             WriteDataForVerifyLoginStatus.temporaryCurrenUsername = currentUser.name();
         }
@@ -53,6 +54,8 @@ public class UIWithAccount {
         }catch (Exception exception){
             System.out.println("[+] Welcome exception: " + exception.getMessage());
         }
+        // keep the same client
+        this.client = client;
         //
         while (true){
             System.out.println("""
@@ -97,7 +100,7 @@ public class UIWithAccount {
                             .orElse(null);  // Avoid exceptions
 
                     if (receiver != null) {
-                        new Client().getClientChatSocket(serverIpAddress, serverPort, WriteDataForVerifyLoginStatus.temporaryCurrenUsername, receiver);
+                        this.client.getClientChatSocket(serverIpAddress, serverPort, WriteDataForVerifyLoginStatus.temporaryCurrenUsername, receiver);
                     } else {
                         System.out.println("[!] Connector not found :(.");
                     }

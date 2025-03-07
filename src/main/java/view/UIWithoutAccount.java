@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 public class UIWithoutAccount {
+    private Client client;
     private final static AuthController authController = new AuthController();
     private final static Properties properties = LoadingFileData.loadingProperties();
     private static int serverPort;
@@ -56,7 +57,7 @@ public class UIWithoutAccount {
         return new UserRegisterDto(name, email, password, Date.valueOf(LocalDate.now()));
     }
 
-    public void home() {
+    public void home(Client client) {
         // load all users
         //
         System.out.println("----");
@@ -64,9 +65,10 @@ public class UIWithoutAccount {
         // Check if client has been connected to the server
         assert properties != null;
         if (Client.testConnection(serverIpAddress, serverPort)) {
+            this.client = client;
             // Check if user has logged in
             if (!Objects.equals(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()), "null")) {
-                new UIWithAccount().home();
+                new UIWithAccount().home(client);
                 return;
             }
             while (true) {
@@ -105,7 +107,7 @@ public class UIWithoutAccount {
                     // Connect new client to the server
                     new Client().getLoginSocket(serverIpAddress, serverPort, false, responseUserDto);
                     System.out.println("------\n[+] User data created: " + responseUserDto);
-                    new UIWithAccount().home();
+                    new UIWithAccount().home(this.client);
                 } else {
                     System.out.println("🔥 Registration failed. Please try again.");
                 }
@@ -125,7 +127,7 @@ public class UIWithoutAccount {
                     WriteDataForVerifyLoginStatus.temporaryCurrenUsername = username;
                     // Connect to server
                     new Client().getLoginSocket(serverIpAddress, serverPort, true, responseUserDto);
-                    new UIWithAccount().home();
+                    new UIWithAccount().home(this.client);
                 } else {
                     System.out.println("☹ Login failed. Incorrect username or password.");
                 }
