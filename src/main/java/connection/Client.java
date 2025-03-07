@@ -65,7 +65,6 @@ public class Client {
                 } catch (IOException e) {
                     System.out.println("[!] Error during network connection: " + e.getMessage());
                 }
-
                 try {
                     while (isChatActive[0]) {
                         if (in.ready()) {

@@ -68,5 +68,5 @@ public class UserServiceImpl implements UserService {
         return UserBean.userManualMapper.fromUserToResponseUserDto(user);
     }
     //
-    public List<ResponseUserDto> allUsers = findAllUsers();
+
 }

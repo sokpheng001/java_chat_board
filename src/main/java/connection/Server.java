@@ -46,6 +46,7 @@ public class Server {
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
                         // receive data from client
                         BufferedReader in  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        System.out.println(in.readLine());
                         if(in.readLine()!=null){
                             Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream().filter(e-> {
                                         try {
@@ -55,6 +56,7 @@ public class Server {
                                         }
                                     })
                                             .findFirst();
+                            System.out.println("This is user" +  user.get());
                             user.ifPresent(responseUserDto -> {
                                 senderName = responseUserDto.name();
                                 System.out.println("User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
