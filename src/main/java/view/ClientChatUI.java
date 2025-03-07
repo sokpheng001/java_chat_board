@@ -23,10 +23,11 @@ public class ClientChatUI implements Runnable {
     private static final Map<String, ClientChatUI> clientHandlers = new HashMap<>();  // Mapping client login (username) to their handler
 
     // Constructor for ClientChatUI
-    public ClientChatUI(Socket socket) throws IOException {
+    public ClientChatUI(Socket socket, String senderName) throws IOException {
         this.clientSocket = socket;
         this.out = new PrintWriter(clientSocket.getOutputStream(), true);  // Ensure auto-flush
         this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        username = senderName;
     }
     @Override
     public void run() {
@@ -43,7 +44,7 @@ public class ClientChatUI implements Runnable {
                 }
                 System.out.println("[->] Message from [" + clientSocket.getInetAddress() + "]: " + message);
                 // Forward the message to other clients (except sender)
-//                forwardMessageToOtherClients(username, message);
+                forwardMessageToOtherClients(username, message);
             }
         } catch (IOException e) {
             System.out.println("[!] Error retrieve message from client: " + e.getMessage());

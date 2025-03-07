@@ -1,6 +1,9 @@
 package connection;
 
 import bean.UserBean;
+import client.service.UserServiceImpl;
+import client.service.abstraction.UserService;
+import model.User;
 import model.dto.ResponseUserDto;
 import server.repository.ServerRepository;
 import utils.GetMachineIP;
@@ -12,12 +15,15 @@ import java.io.*;
 import java.net.*;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 public class Server {
     private final static Properties properties = LoadingFileData.loadingProperties();
     private final static ResponseUserDto currentUser = UserBean.userController
             .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
+    private static  String senderName = null;
     public static void startServer() {
         try {
             assert properties != null;
@@ -40,14 +46,25 @@ public class Server {
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
                         // receive data from client
                         BufferedReader in  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                        System.out.println(in.readLine());
                         if(in.readLine()!=null){
+                            Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream().filter(e-> {
+                                        try {
+                                            return e.name().equals(in.readLine().trim());
+                                        } catch (IOException ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    })
+                                            .findFirst();
+                            user.ifPresent(responseUserDto -> {
+                                senderName = responseUserDto.name();
+                                System.out.println("User [" + senderName + "] has joined the chat at " + Date.from(Instant.now()));
+                            });
                             System.out.println("[*] Message from client: " + in.readLine());
                         }
                         System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                         System.out.println("---");
                         // start chat
-                        ClientChatUI clientChatUI = new ClientChatUI(clientSocket);
+                        ClientChatUI clientChatUI = new ClientChatUI(clientSocket, senderName);
                         new Thread(clientChatUI).start();
                     }
                 }
@@ -56,5 +73,6 @@ public class Server {
             System.out.println("[!] Server Error: " + e.getMessage());
         }
     }
+    //
 
 }

@@ -48,7 +48,6 @@ public class Client {
     public void getClientChatSocket(String host, int port, String sender, ResponseUserDto receiver) {
         // Declare isChatActive flag here to control the chat state
         boolean[] isChatActive = {true};
-
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

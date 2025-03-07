@@ -2,6 +2,7 @@ package view;
 
 import bean.UserBean;
 import client.controller.AuthController;
+import client.service.UserServiceImpl;
 import connection.Client;
 import model.User;
 import model.dto.UserRegisterDto;
@@ -56,6 +57,8 @@ public class UIWithoutAccount {
     }
 
     public static void home() {
+        // load all users
+        //
         System.out.println("----");
 
         // Check if client has been connected to the server

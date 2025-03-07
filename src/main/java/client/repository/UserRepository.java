@@ -3,6 +3,7 @@ package client.repository;
 
 import client.repository.abstraction.SokPhengRepository;
 import model.User;
+import model.dto.ResponseUserDto;
 import utils.GetDatabaseConnection;
 
 import java.sql.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository implements SokPhengRepository<User, Integer> {
+
     private User extractUserFromResultSet(ResultSet rs) throws SQLException {
         return new User(
                 rs.getLong("id"),

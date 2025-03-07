@@ -18,6 +18,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Override
     public ResponseUserDto registerUser(UserRegisterDto registerDto) {
+
         try{
             if(CustomizeValidator.isValidEmail(registerDto.email())){
                 User user = UserBean.userManualMapper.fromRegisterUserDtoToUser(registerDto);
@@ -66,4 +67,6 @@ public class UserServiceImpl implements UserService {
         User user = UserBean.userRepository.findUserByUuid(uuid);
         return UserBean.userManualMapper.fromUserToResponseUserDto(user);
     }
+    //
+    public List<ResponseUserDto> allUsers = findAllUsers();
 }
