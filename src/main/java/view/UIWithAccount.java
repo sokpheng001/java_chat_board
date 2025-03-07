@@ -17,24 +17,27 @@ import java.util.*;
 
 public class UIWithAccount {
     // get login user info
-    private static final String userUuidFromLogin = String.valueOf(WriteDataForVerifyLoginStatus.isLogin());
-    private static final ResponseUserDto loginUser = UserBean.userController.getUserByUuid(userUuidFromLogin);
-    private final static Properties properties = LoadingFileData.loadingProperties();
-    private final static ResponseUserDto currentUser = UserBean.userController
+    private  final String userUuidFromLogin = String.valueOf(WriteDataForVerifyLoginStatus.isLogin());
+    private  final ResponseUserDto loginUser = UserBean.userController.getUserByUuid(userUuidFromLogin);
+    private final  Properties properties = LoadingFileData.loadingProperties();
+    private final  ResponseUserDto currentUser = UserBean.userController
             .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
-    private static int serverPort;
-    private static String serverIpAddress;
+    private final int serverPort;
 
-    static {
+    {
         assert properties != null;
         serverPort = Integer.parseInt(properties.getProperty("server_port"));
-        serverIpAddress = ServerRepository.findFirstServerRowData().ipAddress();
     }
-    private static void pressToNext(){
+
+    ;
+    private final String serverIpAddress = Objects.requireNonNull(ServerRepository.findFirstServerRowData()).ipAddress();
+
+
+    private  void pressToNext(){
         System.out.print("> Press enter to continue: ");
         new Scanner(System.in).nextLine();
     }
-    public static void home(){
+    public  void home(){
         if(WriteDataForVerifyLoginStatus.temporaryCurrenUsername==null){
             WriteDataForVerifyLoginStatus.temporaryCurrenUsername = currentUser.name();
         }
@@ -67,9 +70,9 @@ public class UIWithAccount {
             switchOpt(opt);
         }
     }
-    private static List<ResponseUserDto> connectedUsers = null;
-    private static final Scanner scanner = new Scanner(System.in);
-    private static void switchOpt(int opt){
+    private  List<ResponseUserDto> connectedUsers = null;
+    private  final Scanner scanner = new Scanner(System.in);
+    private  void switchOpt(int opt){
         switch (opt){
             case 1 ->{
                 System.out.println("----");
@@ -132,7 +135,7 @@ public class UIWithAccount {
                 String answer = scanner.nextLine();
                 if(answer.equals("y")){
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile("null");
-                    UIWithoutAccount.home();
+                    new UIWithoutAccount().home();
                 }
                 pressToNext();
             }

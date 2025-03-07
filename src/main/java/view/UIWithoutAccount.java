@@ -31,7 +31,7 @@ public class UIWithoutAccount {
         serverIpAddress = ServerRepository.findFirstServerRowData().ipAddress();
     }
 
-    private static UserRegisterDto getRegisterDto() {
+    private  UserRegisterDto getRegisterDto() {
         String name = null, email = null, password = null;
 
         while (name == null || email == null || password == null) {
@@ -56,7 +56,7 @@ public class UIWithoutAccount {
         return new UserRegisterDto(name, email, password, Date.valueOf(LocalDate.now()));
     }
 
-    public static void home() {
+    public void home() {
         // load all users
         //
         System.out.println("----");
@@ -66,7 +66,7 @@ public class UIWithoutAccount {
         if (Client.testConnection(serverIpAddress, serverPort)) {
             // Check if user has logged in
             if (!Objects.equals(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()), "null")) {
-                UIWithAccount.home();
+                new UIWithAccount().home();
                 return;
             }
             while (true) {
@@ -88,12 +88,12 @@ public class UIWithoutAccount {
         }
     }
 
-    private static void pressToNext() {
+    private  void pressToNext() {
         System.out.print("> Press enter to continue: ");
         new Scanner(System.in).nextLine();
     }
 
-    private static void switchOpt(int opt) {
+    private  void switchOpt(int opt) {
         switch (opt) {
             case 1 -> {
                 // Register
@@ -105,7 +105,7 @@ public class UIWithoutAccount {
                     // Connect new client to the server
                     new Client().getLoginSocket(serverIpAddress, serverPort, false, responseUserDto);
                     System.out.println("------\n[+] User data created: " + responseUserDto);
-                    UIWithAccount.home();
+                    new UIWithAccount().home();
                 } else {
                     System.out.println("🔥 Registration failed. Please try again.");
                 }
@@ -125,7 +125,7 @@ public class UIWithoutAccount {
                     WriteDataForVerifyLoginStatus.temporaryCurrenUsername = username;
                     // Connect to server
                     new Client().getLoginSocket(serverIpAddress, serverPort, true, responseUserDto);
-                    UIWithAccount.home();
+                    new UIWithAccount().home();
                 } else {
                     System.out.println("☹ Login failed. Incorrect username or password.");
                 }

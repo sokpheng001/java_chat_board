@@ -22,9 +22,9 @@ public class Server {
     private final static Properties properties = LoadingFileData.loadingProperties();
     private final static ResponseUserDto currentUser = UserBean.userController
             .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
-    private static String senderName = null;
+    private String senderName = null;
 
-    public static void startServer() {
+    public void startServer() {
         try {
             assert properties != null;
             int serverPort = Integer.parseInt(properties.getProperty("server_port"));
