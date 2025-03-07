@@ -11,6 +11,7 @@ import utils.GetMachineIP;
 import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -38,7 +39,7 @@ public class UIWithAccount {
         System.out.print("> Press enter to continue: ");
         new Scanner(System.in).nextLine();
     }
-    public  void home(Client client){
+    public  void home(Client client) throws IOException {
         if(WriteDataForVerifyLoginStatus.temporaryCurrenUsername==null){
             WriteDataForVerifyLoginStatus.temporaryCurrenUsername = currentUser.name();
         }
@@ -75,7 +76,7 @@ public class UIWithAccount {
     }
     private  List<ResponseUserDto> connectedUsers = null;
     private  final Scanner scanner = new Scanner(System.in);
-    private  void switchOpt(int opt){
+    private  void switchOpt(int opt) throws IOException {
         switch (opt){
             case 1 ->{
                 System.out.println("----");

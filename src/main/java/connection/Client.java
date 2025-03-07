@@ -8,9 +8,10 @@ import java.time.Instant;
 import java.util.Date;
 
 public class Client {
-
-    public static boolean testConnection(String host, int port) {
-        try (Socket socket = new Socket(host, port)) {
+    private Socket socket;
+    public  boolean testConnection(Socket clientSocket) {
+        this.socket  = clientSocket;
+        try (Socket socket = this.socket) {
             System.out.println("✅ Connection to server established.");
             return true;
         } catch (IOException e) {
@@ -28,9 +29,9 @@ public class Client {
     }
 
     // Method for the initial connection to the server (for login or registration)
-    public void getLoginSocket(String host, int port, boolean isLogin, ResponseUserDto responseUserDto) {
-        System.out.println("[+] Connected to server " + host + " on port " + port);
-        try (Socket socket = new Socket(host, port);
+    public void getLoginSocket(boolean isLogin, ResponseUserDto responseUserDto) {
+        System.out.println("[+] Connected to server " + this.socket.getInetAddress() + " on port " + this.socket.getPort());
+        try (Socket socket = this.socket;
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
             // Send login or registration info to the server
             if (!isLogin) {
@@ -48,7 +49,7 @@ public class Client {
     public void getClientChatSocket(String host, int port, String sender, ResponseUserDto receiver) {
         // Declare isChatActive flag here to control the chat state
         boolean[] isChatActive = {true};
-        try (Socket socket = new Socket(host, port);
+        try (Socket socket = this.socket;
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {

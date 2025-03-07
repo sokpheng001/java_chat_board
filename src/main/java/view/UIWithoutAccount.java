@@ -13,6 +13,8 @@ import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
 import utils.validation.CustomizeValidator;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -57,15 +59,16 @@ public class UIWithoutAccount {
         return new UserRegisterDto(name, email, password, Date.valueOf(LocalDate.now()));
     }
 
-    public void home(Client client) {
+    public void home(Client client) throws IOException {
+        this.client = client;
         // load all users
         //
         System.out.println("----");
 
         // Check if client has been connected to the server
         assert properties != null;
-        if (Client.testConnection(serverIpAddress, serverPort)) {
-            this.client = client;
+        if (this.client.testConnection(new Socket(serverIpAddress, serverPort))) {
+
             // Check if user has logged in
             if (!Objects.equals(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()), "null")) {
                 new UIWithAccount().home(client);
@@ -95,7 +98,7 @@ public class UIWithoutAccount {
         new Scanner(System.in).nextLine();
     }
 
-    private  void switchOpt(int opt) {
+    private  void switchOpt(int opt) throws IOException {
         switch (opt) {
             case 1 -> {
                 // Register
@@ -105,7 +108,7 @@ public class UIWithoutAccount {
                     // Write user uuid to file to verify login status
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile(responseUserDto.uuid());
                     // Connect new client to the server
-                    new Client().getLoginSocket(serverIpAddress, serverPort, false, responseUserDto);
+                    this.client.getLoginSocket( false, responseUserDto);
                     System.out.println("------\n[+] User data created: " + responseUserDto);
                     new UIWithAccount().home(this.client);
                 } else {
@@ -126,7 +129,7 @@ public class UIWithoutAccount {
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile(responseUserDto.uuid());
                     WriteDataForVerifyLoginStatus.temporaryCurrenUsername = username;
                     // Connect to server
-                    new Client().getLoginSocket(serverIpAddress, serverPort, true, responseUserDto);
+                    this.client.getLoginSocket(true, responseUserDto);
                     new UIWithAccount().home(this.client);
                 } else {
                     System.out.println("☹ Login failed. Incorrect username or password.");
