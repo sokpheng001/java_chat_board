@@ -11,13 +11,9 @@ public class Client {
     private Socket socket;
     public  boolean testConnection(Socket clientSocket) {
         this.socket  = clientSocket;
-        try (Socket socket = this.socket) {
-            System.out.println("✅ Connection to server established.");
-            return true;
-        } catch (IOException e) {
-            System.out.println("⚠ Connection to server failed.");
-            return false;
-        }
+        Socket socket = this.socket ;
+        System.out.println("✅ Connection to server established.");
+        return true;
     }
 
     private void chatUI(String chatter) {
