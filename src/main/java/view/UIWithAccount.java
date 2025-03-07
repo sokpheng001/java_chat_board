@@ -13,6 +13,7 @@ import utils.WriteDataForVerifyLoginStatus;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -39,7 +40,8 @@ public class UIWithAccount {
         System.out.print("> Press enter to continue: ");
         new Scanner(System.in).nextLine();
     }
-    public  void home(Client client) throws IOException {
+    private Socket socket;
+    public  void home(Client client, Socket socket) throws IOException {
         if(WriteDataForVerifyLoginStatus.temporaryCurrenUsername==null){
             WriteDataForVerifyLoginStatus.temporaryCurrenUsername = currentUser.name();
         }
@@ -57,6 +59,7 @@ public class UIWithAccount {
         }
         // keep the same client
         this.client = client;
+        this.socket = socket;
         //
         while (true){
             System.out.println("""
@@ -139,7 +142,7 @@ public class UIWithAccount {
                 String answer = scanner.nextLine();
                 if(answer.equals("y")){
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile("null");
-                    new UIWithoutAccount().home(this.client);
+                    new UIWithoutAccount().home(this.client, this.socket);
                 }
                 pressToNext();
             }

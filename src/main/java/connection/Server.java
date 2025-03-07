@@ -49,7 +49,6 @@ public class Server {
                         PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                         // Read the username (first message from client)
                         String username = in.readLine();
-                        System.out.println("[+] Server Username: " + username);
                         Optional<ResponseUserDto> user = new UserServiceImpl().findAllUsers().stream()
                                 .filter(e -> e.name().equals(username))
                                 .findFirst();
@@ -61,6 +60,7 @@ public class Server {
                         } else {
                             out.println("User not found.");
                         }
+                        System.out.println("---");
 
                         // Read and print further messages from client
                         String message;

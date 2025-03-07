@@ -23,16 +23,20 @@ import java.util.Scanner;
 
 public class UIWithoutAccount {
     private Client client;
-    private final static AuthController authController = new AuthController();
-    private final static Properties properties = LoadingFileData.loadingProperties();
-    private static int serverPort;
-    private static String serverIpAddress;
+    private Socket socket;
+    private final  AuthController authController = new AuthController();
+    private final  Properties properties = LoadingFileData.loadingProperties();
+    private  int serverPort;
 
-    static {
+    {
         assert properties != null;
         serverPort = Integer.parseInt(properties.getProperty("server_port"));
-        serverIpAddress = ServerRepository.findFirstServerRowData().ipAddress();
     }
+
+    ;
+    private  String serverIpAddress = Objects.requireNonNull(ServerRepository.findFirstServerRowData()).ipAddress();
+
+
 
     private  UserRegisterDto getRegisterDto() {
         String name = null, email = null, password = null;
@@ -59,19 +63,19 @@ public class UIWithoutAccount {
         return new UserRegisterDto(name, email, password, Date.valueOf(LocalDate.now()));
     }
 
-    public void home(Client client) throws IOException {
+    public void home(Client client, Socket socket) throws IOException {
         this.client = client;
+        this.socket = socket;
         // load all users
         //
         System.out.println("----");
 
         // Check if client has been connected to the server
         assert properties != null;
-        if (this.client.testConnection(new Socket(serverIpAddress, serverPort))) {
-
+        if (this.client.testConnection(this.socket)) {
             // Check if user has logged in
             if (!Objects.equals(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()), "null")) {
-                new UIWithAccount().home(client);
+                new UIWithAccount().home(this.client, this.socket);
                 return;
             }
             while (true) {
@@ -110,7 +114,7 @@ public class UIWithoutAccount {
                     // Connect new client to the server
                     this.client.getLoginSocket( false, responseUserDto);
                     System.out.println("------\n[+] User data created: " + responseUserDto);
-                    new UIWithAccount().home(this.client);
+                    new UIWithAccount().home(this.client, this.socket);
                 } else {
                     System.out.println("🔥 Registration failed. Please try again.");
                 }
@@ -130,7 +134,7 @@ public class UIWithoutAccount {
                     WriteDataForVerifyLoginStatus.temporaryCurrenUsername = username;
                     // Connect to server
                     this.client.getLoginSocket(true, responseUserDto);
-                    new UIWithAccount().home(this.client);
+                    new UIWithAccount().home(this.client, this.socket);
                 } else {
                     System.out.println("☹ Login failed. Incorrect username or password.");
                 }
