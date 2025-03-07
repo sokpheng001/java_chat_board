@@ -21,6 +21,7 @@ public class Server {
     private final static ResponseUserDto currentUser = UserBean.userController
             .getUserByUuid(String.valueOf(WriteDataForVerifyLoginStatus.isLogin()));
     private String senderName = null;
+    private ClientChatUI chatUI = new ClientChatUI();
 
     public void startServer() {
         try {
@@ -47,7 +48,8 @@ public class Server {
                         // Start a new thread to handle the client communication
                         new Thread(new ClientHandler(clientSocket)).start();
                         // Start chat interface for the client
-                        new Thread(new ClientChatUI(clientSocket, senderName)).start();
+                        chatUI.getUI(clientSocket, senderName);
+                        new Thread(chatUI).start();
                     }
                 }
             }
