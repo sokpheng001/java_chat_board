@@ -138,7 +138,7 @@ public class UIWithAccount {
                 String answer = scanner.nextLine();
                 if(answer.equals("y")){
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile("null");
-                    new UIWithoutAccount().home();
+                    new UIWithoutAccount().home(this.client);
                 }
                 pressToNext();
             }
