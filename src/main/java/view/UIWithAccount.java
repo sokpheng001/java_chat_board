@@ -13,10 +13,7 @@ import utils.WriteDataForVerifyLoginStatus;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.Scanner;
+import java.util.*;
 
 public class UIWithAccount {
     // get login user info
@@ -70,13 +67,15 @@ public class UIWithAccount {
             switchOpt(opt);
         }
     }
+    private static List<ResponseUserDto> connectedUsers = null;
+    private static final Scanner scanner = new Scanner(System.in);
     private static void switchOpt(int opt){
         switch (opt){
             case 1 ->{
                 System.out.println("----");
                 System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
                 // get all connected user
-                List<ResponseUserDto> connectedUsers = ChatConnectionBean.controller
+                connectedUsers = ChatConnectionBean.controller
                         .getAllConnectedUser(currentUser.uuid());
                 if(connectedUsers.isEmpty()){
                     System.out.println("""
@@ -88,10 +87,14 @@ public class UIWithAccount {
                     System.out.println("---");
                     System.out.print("[+] Enter connector name to chat: ");
                     String cName = new Scanner(System.in).nextLine();
-                    ResponseUserDto conn = UserBean.userController.getUserByName(cName);
-                    if(conn!=null){
-                        new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name() ,conn);
-                    }else {
+                    // find related connector
+                    ResponseUserDto conn = connectedUsers.stream()
+                            .filter(e -> e.name().equals(cName))  // Compare name instead of entire object
+                            .findFirst()
+                            .orElse(null);  // Avoid exceptions
+                    if (conn != null) {
+                        new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name(), conn);
+                    } else {
                         System.out.println("[!] Connector not found :(.");
                     }
                     System.out.println("----");
@@ -125,7 +128,7 @@ public class UIWithAccount {
             }
             case 4 ->{
                 System.out.print("[*] Are you sure you want to logout? (y/n): ");
-                String answer = new Scanner(System.in).nextLine();
+                String answer = scanner.nextLine();
                 if(answer.equals("y")){
                     WriteDataForVerifyLoginStatus.writeDataOfStatusToFile("null");
                     UIWithoutAccount.home();
@@ -137,6 +140,7 @@ public class UIWithAccount {
                 String answer = new Scanner(System.in).nextLine();
                 if(answer.equals("y")){
                     System.out.println("\uD83D\uDC4B Back to Home");
+                    scanner.close();
                     System.exit(0);
                 }
             }

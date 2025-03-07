@@ -1,7 +1,6 @@
 package connection;
 
 import model.dto.ResponseUserDto;
-import view.ClientChatUI;
 
 import java.io.*;
 import java.net.*;
@@ -19,11 +18,12 @@ public class Client {
             return false;
         }
     }
+
     private void chatUI(String chatter) {
         System.out.println("-".repeat(30));
         System.out.println("Enter 'exit' to quit)");
         System.out.println("-".repeat(30));
-        System.out.println("Chat with User: [" + chatter + "]");
+        System.out.println("Chat with User: [" + chatter + "] at [" + Instant.now() + "]");
         System.out.println("-".repeat(30));
     }
 
@@ -44,51 +44,60 @@ public class Client {
     }
 
     // Method to start the chat functionality
-    public void getClientChatSocket(String host, int port, String sender,ResponseUserDto receiver) {
+    public void getClientChatSocket(String host, int port, String sender, ResponseUserDto receiver) {
+        // Declare isChatActive flag here to control the chat state
+        boolean[] isChatActive = {true};
 
         try (Socket socket = new Socket(host, port);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()), 1);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
 
             // Send login info when the user connects
             out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
 
-//            out.flush();
             // Thread to receive messages from the server
             Thread listenThread = new Thread(() -> {
                 try {
+                    // Wait and display initial message
                     System.out.println(in.readLine());
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("[!] Error during network connection: " + e.getMessage());
                 }
+
                 try {
-                    while (true) {
-                        if(in.ready()){
+                    while (isChatActive[0]) {
+                        if (in.ready()) {
                             String message = in.readLine();
-                            System.out.print(message);
+                            System.out.println(message);  // Print incoming messages from other users
                         }
-                        // Display incoming messages from the server (i.e., messages from other clients)
                     }
                 } catch (IOException e) {
                     System.out.println("[!] Error while receiving messages: " + e.getMessage());
                 }
             });
-            listenThread.start();
+
+            listenThread.start();  // Start the listener thread
+
             // Loop to send messages to the server
             chatUI(receiver.name());
             String message;
+
             while (true) {
                 System.out.print("[You]: ");
                 message = consoleInput.readLine();
                 if ("exit".equalsIgnoreCase(message)) {
                     out.println("User [" + sender + "] has left the chat.");
-                    out.close();
-                    return;
+                    isChatActive[0] = false;  // Set isChatActive to false to stop the chat
+                    break;
                 }
                 // Send the message to the server
                 out.println(message);
             }
+
+            // Close the socket after chat ends
+            socket.close();
+
         } catch (IOException e) {
             System.out.println("[!] Error during network connection: " + e.getMessage());
         }

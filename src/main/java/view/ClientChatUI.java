@@ -33,11 +33,8 @@ public class ClientChatUI implements Runnable {
     public void run() {
         try {
             // Register client handler in the server
-
-            List<ResponseUserDto> responseUserDtoList = UserBean.userController.getAllUsers();
-
             synchronized (clientHandlers) {
-                responseUserDtoList.forEach(e->clientHandlers.put(e.name(), this));
+                clientHandlers.put(username, this);
             }
             String message;
             while ((message = in.readLine()) != null) {
@@ -51,18 +48,19 @@ public class ClientChatUI implements Runnable {
             }
         } catch (IOException e) {
             System.out.println("[!] Error retrieve message from client: " + e.getMessage());
-        } finally {
-            // Remove the client from the active list and close the connection
-            try {
-                synchronized (clientHandlers) {
-                    clientHandlers.remove(username);
-                }
-                clientSocket.close();
-                System.out.println("[+] Client disconnected.");
-                System.out.println("---");
-            } catch (IOException e) {
-                System.out.println("[!] Error during disconnecting client: " + e.getMessage());
-            }
+
+//        } finally {
+//            // Remove the client from the active list and close the connection
+//            try {
+//                synchronized (clientHandlers) {
+//                    clientHandlers.remove(username);
+//                    System.out.println("[+] Client disconnected.");
+//                }
+//                clientSocket.close();
+//                System.out.println("---");
+//            } catch (IOException e) {
+//                System.out.println("[!] Error during disconnecting client: " + e.getMessage());
+//            }
         }
     }
 
@@ -72,9 +70,9 @@ public class ClientChatUI implements Runnable {
             for (Map.Entry<String, ClientChatUI> entry : clientHandlers.entrySet()) {
                 ClientChatUI recipientHandler = entry.getValue();
                 // Send message to all clients except the sender
-//                if (!recipientHandler.username.equals(sender)) {
+                if (!recipientHandler.username.equals(sender)) {
                     recipientHandler.out.println("[" + sender + "]: " + message);
-//                }
+                }
             }
         }
     }
