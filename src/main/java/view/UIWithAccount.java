@@ -88,12 +88,12 @@ public class UIWithAccount {
                     System.out.print("[+] Enter connector name to chat: ");
                     String cName = new Scanner(System.in).nextLine();
                     // find related connector
-                    ResponseUserDto conn = connectedUsers.stream()
+                    ResponseUserDto receiver = connectedUsers.stream()
                             .filter(e -> e.name().equals(cName))  // Compare name instead of entire object
                             .findFirst()
                             .orElse(null);  // Avoid exceptions
-                    if (conn != null) {
-                        new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name(), conn);
+                    if (receiver != null) {
+                        new Client().getClientChatSocket(serverIpAddress, serverPort, currentUser.name(), receiver);
                     } else {
                         System.out.println("[!] Connector not found :(.");
                     }

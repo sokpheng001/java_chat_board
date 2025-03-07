@@ -40,6 +40,7 @@ public class Server {
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
                         // receive data from client
                         BufferedReader in  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        System.out.println(in.readLine());
                         if(in.readLine()!=null){
                             System.out.println("[*] Message from client: " + in.readLine());
                         }

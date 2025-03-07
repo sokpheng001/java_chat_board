@@ -34,6 +34,7 @@ public class Client {
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
             // Send login or registration info to the server
             if (!isLogin) {
+//                out.println(responseUserDto.name());
                 out.println("Hello Server, I am a new user: " + responseUserDto.name());
             } else {
                 out.println("User [" + responseUserDto.name() + "] has logged in at " + Date.from(Instant.now()));
@@ -54,7 +55,7 @@ public class Client {
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
 
             // Send login info when the user connects
-            out.println(receiver.name()); // send name to server for identify who the user is
+            out.println(sender); // send name to server for identify who the user is
             out.println("User [" + sender + "] has joined the chat at " + Date.from(Instant.now()));
 
             // Thread to receive messages from the server
