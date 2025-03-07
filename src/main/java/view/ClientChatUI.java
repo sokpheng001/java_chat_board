@@ -39,11 +39,6 @@ public class ClientChatUI implements Runnable {
             System.out.println(clientHandlers.size());
             String message;
             while ((message = in.readLine()) != null) {
-                if (message.equalsIgnoreCase("exit")) {
-                    in.close();
-                    return;  // Disconnect when "exit" is typed
-                }
-                System.out.println("[->] Message from [" + clientSocket.getInetAddress() + "]: " + message);
                 // Forward the message to other clients (except sender)
                 forwardMessageToOtherClients(username, message);
             }

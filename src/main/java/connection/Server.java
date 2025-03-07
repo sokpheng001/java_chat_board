@@ -43,8 +43,11 @@ public class Server {
                         Socket clientSocket = serverSocket.accept();
                         System.out.println("[+] Client IP connected: " + clientSocket.getInetAddress());
                         System.out.println("[+] Client Port: " + clientSocket.getPort());
+                        System.out.println("---");
                         // Start a new thread to handle the client communication
                         new Thread(new ClientHandler(clientSocket)).start();
+                        // Start chat interface for the client
+                        new Thread(new ClientChatUI(clientSocket, senderName)).start();
                     }
                 }
             }
@@ -104,8 +107,7 @@ public class Server {
                 System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                 System.out.println("---");
 
-                // Start chat interface for the client
-//                new Thread(new ClientChatUI(clientSocket, username)).start();
+
 
             } catch (IOException e) {
                 System.out.println("[!] Error while handling client: " + e.getMessage());
