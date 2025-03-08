@@ -31,9 +31,9 @@ public class Client {
         System.out.println("[+] Connected to server " + this.socket.getInetAddress() + " on port " + this.socket.getPort());
         try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
             if (!isLogin) {
-                out.println("Hello Server, I am a new user: " + responseUserDto.name());
+                out.println("=> Hello Server, I am a new user: " + responseUserDto.name());
             } else {
-                out.println("User [" + responseUserDto.name() + "] has logged in at " + Date.from(Instant.now()));
+                out.println("[+] User [" + responseUserDto.name() + "] has logged in at " + Date.from(Instant.now()));
             }
         } catch (IOException e) {
             System.out.println("[!] Error during network connection: " + e.getMessage());
@@ -46,7 +46,8 @@ public class Client {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in))) {
 
-            out.println(sender); // Send username to server
+            out.println(sender); // Send username of sender to server
+            out.println(receiver.name()); // send username of receiver to server
 
             Thread listenThread = new Thread(() -> {
                 try {

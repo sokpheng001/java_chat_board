@@ -2,6 +2,7 @@ package bean;
 
 import client.controller.UserController;
 import client.repository.UserRepository;
+import client.service.UserServiceImpl;
 import mapper.UserManualMapper;
 
 /**
@@ -13,4 +14,5 @@ public class UserBean {
     public static final UserController userController = new UserController();
     public static final UserManualMapper userManualMapper = new UserManualMapper();
     public static final UserRepository userRepository = new UserRepository();
+    private static final UserServiceImpl userService = new UserServiceImpl();
 }

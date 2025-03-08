@@ -36,8 +36,6 @@ public class UIWithoutAccount {
     ;
     private  String serverIpAddress = Objects.requireNonNull(ServerRepository.findFirstServerRowData()).ipAddress();
 
-
-
     private  UserRegisterDto getRegisterDto() {
         String name = null, email = null, password = null;
 
@@ -67,6 +65,7 @@ public class UIWithoutAccount {
         this.client = client;
         this.socket = socket;
         // load all users
+
         //
         System.out.println("----");
 

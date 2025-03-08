@@ -48,7 +48,7 @@ public class UIWithAccount {
         }
         // get welcome
         System.out.println("---");
-        String welcome = CheckTime.checkTimeOfDay(WriteDataForVerifyLoginStatus.temporaryCurrenUsername) +  ", Welcome Again. ";
+        String welcome = CheckTime.checkTimeOfDay(WriteDataForVerifyLoginStatus.temporaryCurrenUsername);
         try{
             for(int i=0;i<welcome.length();i++){
                 Thread.sleep(100);
