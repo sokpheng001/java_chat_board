@@ -97,7 +97,7 @@ public class Server {
                     out.println("Glad to see you");
                     out.println("...............");
                     System.out.println("---");
-                    sendToAll("[+] User [" + username + "] has joined the chat at " + Date.from(Instant.now()), this);
+                    sendToAll("[" + username + "] has joined the chat at " + Date.from(Instant.now()), this);
                 } else {
                     System.out.println("[!] User not found in database. Disconnecting...");
                     out.println("[!] User not found.");
@@ -119,7 +119,7 @@ public class Server {
             } finally {
                 // Remove client on disconnect
                 clients.remove(this);
-                sendToAll(username + " has left the chat.", this);
+                sendToAll("[" + username + "] has left the chat.", this);
                 System.out.println("[!] User [" + username + "] has disconnected.");
                 System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                 System.out.println("---");
@@ -134,9 +134,6 @@ public class Server {
             for (ClientHandler client : clients) {
                 if (client != sender) { // Skip sender
                     client.out.println(message);
-                    if(message.contains("User") || message.contains("joined")){
-                        client.out.println(".".repeat(70));
-                    }
                 }
             }
         }
