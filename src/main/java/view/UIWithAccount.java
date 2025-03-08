@@ -7,6 +7,7 @@ import model.dto.CreateChatConnectionUsingUserNameDto;
 import model.dto.ResponseUserDto;
 import org.nocrala.tools.texttablefmt.Table;
 import server.repository.ServerRepository;
+import utils.CheckTime;
 import utils.GetMachineIP;
 import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
@@ -47,7 +48,7 @@ public class UIWithAccount {
         }
         // get welcome
         System.out.println("---");
-        String welcome = "🌟 Welcome Again, " + WriteDataForVerifyLoginStatus.temporaryCurrenUsername + "! 🌟";
+        String welcome = CheckTime.checkTimeOfDay(WriteDataForVerifyLoginStatus.temporaryCurrenUsername) +  ", Welcome Again. ";
         try{
             for(int i=0;i<welcome.length();i++){
                 Thread.sleep(100);

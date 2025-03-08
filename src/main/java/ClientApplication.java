@@ -2,6 +2,7 @@
 import connection.Client;
 import server.repository.ServerRepository;
 import utils.LoadingFileData;
+import view.UIWithAccount;
 import view.UIWithoutAccount;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class ClientApplication { ;
     private static   String serverIpAddress = Objects.requireNonNull(ServerRepository.findFirstServerRowData()).ipAddress();
 
     public static void main(String[] args) throws IOException {
+
         new UIWithoutAccount().home(new Client(), new Socket(serverIpAddress, serverPort));
     }
 }

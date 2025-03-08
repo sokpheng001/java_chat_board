@@ -4,6 +4,7 @@ import bean.UserBean;
 import client.service.UserServiceImpl;
 import model.dto.ResponseUserDto;
 import server.repository.ServerRepository;
+import utils.CheckTime;
 import utils.GetMachineIP;
 import utils.LoadingFileData;
 import utils.WriteDataForVerifyLoginStatus;
@@ -11,6 +12,7 @@ import utils.WriteDataForVerifyLoginStatus;
 import java.io.*;
 import java.net.*;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Properties;
@@ -90,12 +92,15 @@ public class Server {
                 if (user.isPresent()) {
                     System.out.println("[+] User [" + username + "] has joined the chat at " + Date.from(Instant.now()));
                     System.out.println("---");
-                    out.println("[Server]: Hello, " + username);
-                    System.out.println("--");
-                    sendToAll("[+] User [" + username + "] has joined the chat.", this);
+                    // hello to client
+//                    out.println(CheckTime.checkTimeOfDay(username));
+                    out.println("Glad to see you");
+                    out.println("...............");
+                    System.out.println("---");
+                    sendToAll("[+] User [" + username + "] has joined the chat at " + Date.from(Instant.now()), this);
                 } else {
                     System.out.println("[!] User not found in database. Disconnecting...");
-                    out.println("User not found.");
+                    out.println("[!] User not found.");
                     clientSocket.close();
                     return;
                 }
@@ -114,7 +119,7 @@ public class Server {
             } finally {
                 // Remove client on disconnect
                 clients.remove(this);
-                sendToAll("[+] User [" + username + "] has left the chat.", this);
+                sendToAll(username + " has left the chat.", this);
                 System.out.println("[!] User [" + username + "] has disconnected.");
                 System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                 System.out.println("---");
@@ -129,6 +134,9 @@ public class Server {
             for (ClientHandler client : clients) {
                 if (client != sender) { // Skip sender
                     client.out.println(message);
+                    if(message.contains("User") || message.contains("joined")){
+                        client.out.println(".".repeat(70));
+                    }
                 }
             }
         }

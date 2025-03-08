@@ -1,9 +1,12 @@
 package connection;
 
 import model.dto.ResponseUserDto;
+
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Client {
@@ -17,11 +20,11 @@ public class Client {
     }
 
     private void chatUI(String chatter) {
-        System.out.println("-".repeat(30));
+        System.out.println("-".repeat(70));
         System.out.println("Enter 'exit' to quit");
-        System.out.println("-".repeat(30));
-        System.out.println("Chat with User: [" + chatter + "] at [" + Instant.now() + "]");
-        System.out.println("-".repeat(30));
+        System.out.println("-".repeat(70));
+        System.out.println("Chat with User: [" + chatter + "] at [" + Date.from(Instant.now()) + "]");
+        System.out.println("-".repeat(70));
     }
 
     public void getLoginSocket(boolean isLogin, ResponseUserDto responseUserDto) {
@@ -71,8 +74,8 @@ public class Client {
                     System.out.print("[You]: ");
                     message = consoleInput.readLine();
                     if ("exit".equalsIgnoreCase(message)) {
-                        out.println("User [" + sender + "] has left the chat.");
-                        isChatActive[0] = false;
+                        out.println("[!] User [" + sender + "] has left the chat.");
+                        isChatActive[0] = false;;
                         break;
                     }
                     out.println(message);
