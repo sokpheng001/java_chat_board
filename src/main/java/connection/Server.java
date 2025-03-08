@@ -119,7 +119,7 @@ public class Server {
             } finally {
                 // Remove client on disconnect
                 clients.remove(this);
-                sendToAll("[" + username + "] has left the chat.", this);
+                sendToAll("[" + username + "] has left the chat at " + Date.from(Instant.now()), this);
                 System.out.println("[!] User [" + username + "] has disconnected.");
                 System.out.println("[+] TimeStamp: " + Date.from(Instant.now()));
                 System.out.println("---");
