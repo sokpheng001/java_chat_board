@@ -74,7 +74,7 @@ public class Client {
                     System.out.print("[You]: ");
                     message = consoleInput.readLine();
                     if ("exit".equalsIgnoreCase(message)) {
-                        out.println("[!] User [" + sender + "] has left the chat.");
+//                        out.println("[" + sender + "] has left the chat.");
                         isChatActive[0] = false;;
                         break;
                     }
